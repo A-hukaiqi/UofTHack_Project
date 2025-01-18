@@ -9,6 +9,7 @@ players = []
 audience = []
 game_data = {}
 votes = defaultdict(int)
+theme = ""
 
 # Send game data to players
 async def send_to_players():
@@ -21,12 +22,20 @@ async def send_to_players():
 
 # Handle player connections
 async def handle_player(websocket):
+
     players.append(websocket)
     print(f"Player connected: {websocket.remote_address}")
 
     try:
-        await send_to_players()
-        await websocket.wait_closed()
+        async for message in websocket:#loop through all requests
+            data = json.loads(message)
+            if data["type"] == "theme_selection":#front end
+                # Save the user's selected theme
+                theme = data["theme"]
+                await websocket.send(json.dumps({"type": "confirmation", "message": f"Theme '{theme}' selected!"}))
+
+            await send_to_players()
+            await websocket.wait_closed()
 
     except websockets.exceptions.ConnectionClosed:
         print(f"Player disconnected: {websocket.remote_address}")
@@ -60,7 +69,7 @@ async def handle_audience(websocket):
 
 # Timer for debate time
 async def game_timer():
-    await asyncio.sleep(120)  # 2-minute debate time
+    await asyncio.sleep(30)  # 2-minute debate time
     print("Time's up!")
     await announce_winner()
 
@@ -78,9 +87,13 @@ async def announce_winner():
 # Main function
 async def main():##############ADD GAME STATE LOOP###################
     global game_data
+    global theme
+
+    if not theme:
+        theme = "politics"  # Default theme if none is selected
 
     # Generate the game prompt and twist
-    game_data = await generate_game_data()
+    game_data = await generate_game_data("generate a prompt", theme)
 
     # Start the game timer
     asyncio.create_task(game_timer())
