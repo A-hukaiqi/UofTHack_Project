@@ -2,11 +2,13 @@ import asyncio
 import websockets
 import json
 from genai import generate_game_data
+from collections import defaultdict
 
 # Store players, audience, and game data
 players = []
 audience = []
 game_data = {}
+votes = defaultdict(int)
 
 # Send game data to players
 async def send_to_players():
@@ -43,7 +45,13 @@ async def handle_audience(websocket):
         }))
 
         async for message in websocket:
-            pass  # Add audience voting logic here if needed
+            data = json.loads(message)
+            if data.get("type")=="vote":
+                voted_player = data.get("player") #refers to player user or id
+                if voted_player:
+                    votes[voted_player] += 1 
+                    print(f"vote received for{voted_player}")
+            pass  
 
     except websockets.exceptions.ConnectionClosed:
         print(f"Audience member disconnected: {websocket.remote_address}")
@@ -68,7 +76,7 @@ async def announce_winner():
         await ws.send(json.dumps(result))
 
 # Main function
-async def main():
+async def main():##############ADD GAME STATE LOOP###################
     global game_data
 
     # Generate the game prompt and twist
