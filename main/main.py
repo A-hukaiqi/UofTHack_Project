@@ -18,7 +18,7 @@ theme_selected_event = asyncio.Event()
 # Send game data to players
 async def send_to_players():
     for player in players:
-        await player.send(json.dumps({
+        await player["websocket"].send(json.dumps({
             "type": "game_prompt",
             "prompt": game_data["prompt"],
             "twist": game_data["twist"]
@@ -27,7 +27,11 @@ async def send_to_players():
 # Handle player connections
 async def handle_player(websocket):
     global theme, game_data
-    players.append(websocket)
+    players.append({
+        "websocket": websocket,  # Store WebSocket connection
+        "name": f"Player {len(players) + 1}",  # Assign a player name (you can change this logic)
+        "score": 0  # Initialize score, or any other data you need
+    })
     print(f"Player connected: {websocket.remote_address}")
 
     try:
@@ -54,11 +58,18 @@ async def handle_player(websocket):
                     await theme_selected_event.wait()  # Ensure game_data is populated
                     if game_data:  # Verify game_data exists
                         await send_to_players()
+
     except websockets.exceptions.ConnectionClosed:
         print(f"Player disconnected: {websocket.remote_address}")
-    finally:
-        players.remove(websocket)
 
+    finally:
+        removed_player = next((p for p in players if p["websocket"] == websocket), None)
+        players.remove(removed_player)
+
+# Function to get a player by name
+def get_player_by_name(player_name):
+    player = next((p for p in players if p["name"] == player_name), None)
+    return player
 
 # Handle audience connections
 async def handle_audience(websocket):
@@ -76,36 +87,48 @@ async def handle_audience(websocket):
         async for message in websocket:
             data = json.loads(message)
             if data.get("type") == "vote":
+
                 voted_player = data.get("player")
-                if voted_player:
-                    votes[voted_player] += 1
+                player = get_player_by_name(voted_player)
+
+                if player:
+                    player["score"] += 1  # Increment score of the voted player
                     print(f"Vote received for {voted_player}")
+                else: 
+                    await websocket.send(json.dumps({
+                        "type": "error",
+                        "message": f"Player {voted_player} does not exist!"
+                    }))
+
             elif data.get("type") == "quit":
                 print("Quit message received. Ending game...")
                 quit = True  # Set the quit flag to True
+
     except websockets.exceptions.ConnectionClosed:
         print(f"Audience member disconnected: {websocket.remote_address}")
+
     finally:
         audience.remove(websocket)
 
 # Timer for debate time
 async def game_timer():
     global theme
-    await asyncio.sleep(120)  # 2-minute debate time
+    await asyncio.sleep(3)  # 2-minute debate time
     theme = ""
     print("Time's up!")
     await announce_winner()
 
 # Announce the winner at the end of the round
 async def announce_winner():
-    winner = "Player 1"  #WINNING LOGIC#############################
+    winner = max(players, key=lambda p: p["score"], default=None)
     result = {
         "type": "winner",
-        "winner": winner
+        "winner": winner["name"]
     }
-
-    for ws in players + audience:
-        await ws.send(json.dumps(result))
+    for player in players:
+        await player["websocket"].send(json.dumps(result))
+    for audi in audience:
+        await audi.send(json.dumps(result))
 
 # Main function
 async def main():
