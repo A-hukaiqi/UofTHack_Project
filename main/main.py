@@ -8,7 +8,6 @@ from collections import defaultdict
 players = []
 audience = []
 game_data = {}
-votes = defaultdict(int)
 theme = ""
 quit = False
 
@@ -113,7 +112,7 @@ async def handle_audience(websocket):
 # Timer for debate time
 async def game_timer():
     global theme
-    await asyncio.sleep(3)  # 2-minute debate time
+    await asyncio.sleep(2)  # 2-minute debate time
     theme = ""
     print("Time's up!")
     await announce_winner()
@@ -158,6 +157,12 @@ async def main():
         if quit:
             print("Game is ending...")
             await announce_winner()
+
+        for player in players:#reset scores of players to 0
+            player["score"] = 0
+
+        game_data = {}#reset game_data to none
+        print("THINGS ARE RESET")
 
     # Clean up WebSocket servers
     player_server.close()
