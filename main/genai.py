@@ -34,7 +34,7 @@ funny_model = genai.GenerativeModel(
 history = []
 
 # Function to generate game data
-async def generate_game_data(user_input, theme):
+def generate_game_data(user_input, theme):
     global politics_model, funny_model, history
 
     # Select the appropriate model based on the theme
