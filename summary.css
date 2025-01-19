@@ -1,0 +1,106 @@
+/* General Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling on this page */
+}
+
+/* Background */
+.background {
+    position: relative;
+    height: 100vh; /* Full viewport height */
+    background: linear-gradient(135deg, #ff7eb3, #42a5f5, #ff8a65, #6a11cb);
+    background-size: 400% 400%;
+    animation: gradientAnimation 8s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Container */
+.container {
+    text-align: center;
+    margin: auto;
+    padding: 20px;
+    color: #fff;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Title */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Winner Section */
+.winner-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.winner-section h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffeb3b;
+    margin-bottom: 10px;
+}
+
+.winner-section p {
+    font-size: 1rem;
+    color: #fff;
+}
+
+/* Button Group */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Buttons */
+.btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Secondary Button */
+.btn.secondary {
+    background: linear-gradient(45deg, #ff7eb3, #ff8a65);
+}
+
+.btn.secondary:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
