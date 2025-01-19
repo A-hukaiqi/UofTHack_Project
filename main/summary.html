@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="summary.css">
+</head>
+<body>
+    <div class="background">
+        <div class="container">
+            <!-- Game Summary Header -->
+            <h1 class="title">🏆 Game Summary 🏆</h1>
+
+            <!-- Winner Announcement -->
+            <div class="winner-section">
+                <h2 id="winner">Winner: Debater 1</h2> <!-- Winner dynamically updated -->
+                <p id="summaryDetails">Debater 1 won with 75% of the audience vote!</p> <!-- Optional details -->
+            </div>
+
+            <!-- Buttons for New Game or Exit -->
+            <div class="button-group">
+                <button class="btn" onclick="startNewGame()">Start New Game</button>
+                <button class="btn secondary" onclick="exitGame()">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Placeholder functions for buttons
+        document.addEventListener('DOMContentLoaded', () => {
+    const winner = sessionStorage.getItem('winner');
+    if (winner) {
+        document.getElementById('winner').textContent = `Winner: ${winner}`;
+        document.getElementById('summaryDetails').textContent = `Congratulations to ${winner} for winning the debate!`;
+    }
+});
+
+    </script>
+</body>
+</html>

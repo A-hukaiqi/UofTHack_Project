@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debate in Progress</title>
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Debate in Progress 🔥</h1>
+        <p>Room Code: <span id="roomCode">Loading...</span></p>
+        <div class="section">
+            <h2>Prompt</h2>
+            <p id="debatePrompt">Is artificial intelligence the future of humanity?</p>
+        </div>
+        <div class="section">
+            <h2>Live Voting</h2>
+            <p id="debater1Votes">Debater 1: 0 votes</p>
+            <p id="debater2Votes">Debater 2: 0 votes</p>
+            <button onclick="vote('Debater 1')">Vote for Debater 1</button>
+            <button onclick="vote('Debater 2')">Vote for Debater 2</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
